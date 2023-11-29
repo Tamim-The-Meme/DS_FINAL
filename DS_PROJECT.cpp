@@ -1,6 +1,8 @@
 #include <iostream>
+using namespace std;
 
-// Node structure for the linked list representation of the queue
+
+//======================================================DEFAULT NODE BLOCK=========================================//
 struct Node {
     int data;
     Node* next;
@@ -8,7 +10,13 @@ struct Node {
     Node(int value) : data(value), next(nullptr) {}
 };
 
-// Queue class
+
+
+//=================================================QUEUE DATA STRUCTURE========================================================//
+
+
+
+
 class Queue {
 private:
     Node* front;
@@ -17,12 +25,22 @@ private:
 public:
     Queue() : front(nullptr), rear(nullptr) {}
 
-    // Method to check if the queue is empty
+  
+
+    Node* frontnode()
+    {
+        return front;
+    }
+
+    Node* rearnode()
+    {
+        return rear;
+    }
     bool isEmpty() {
         return front == nullptr;
     }
 
-    // Method to enqueue a new element
+  
     void enqueue(int value) {
         Node* newNode = new Node(value);
         if (isEmpty()) {
@@ -34,11 +52,11 @@ public:
         }
     }
 
-    // Method to dequeue an element
+  
     int dequeue() {
         if (isEmpty()) {
             std::cerr << "Error: Queue is empty." << std::endl;
-            return -1; // Assuming -1 as an invalid value for demonstration purposes
+            return -1; 
         }
 
         int value = front->data;
@@ -55,7 +73,6 @@ public:
         return value;
     }
 
-    // Destructor to free allocated memory
     ~Queue() {
         while (!isEmpty()) {
             dequeue();
@@ -63,57 +80,82 @@ public:
     }
 };
 
-// Class to represent a graph using adjacency list
-class Graph {
+
+
+
+
+//====================================================SIMPLE ARRAY WALI LINKED LIST==========================================================//
+
+
+
+
+class LinkedList {
 private:
-    int numVertices;
-    Node** adjacencyList;
-    int** adjacencyMatrix;
-
+ 
 public:
-    // Constructor to initialize the graph with a given number of vertices
-    Graph(int vertices) : numVertices(vertices) {
-        adjacencyList = new Node * [numVertices]();
-        adjacencyMatrix = new int* [numVertices]();
+    Node* head;
+    LinkedList() : head(nullptr) {}
+    void addNode(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+    }
 
-        for (int i = 0; i < numVertices; ++i) {
-            adjacencyList[i] = nullptr;
-            adjacencyMatrix[i] = new int[numVertices]();
+    void displayList() {
+        Node* current = head;
+        while (current != nullptr) {
+            cout << current->data << " ";
+            current = current->next;
         }
     }
 
-    // Method to add an edge to the graph
-    void addEdge(int source, int destination) {
-        // Adding to adjacency list (linked list)
-        Node* newNode = new Node(destination);
-        newNode->next = adjacencyList[source];
-        adjacencyList[source] = newNode;
+    ~LinkedList() {
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
 
-       
-        adjacencyMatrix[source][destination] = 1;
+
+//===================================================GRAPH DATA STRUCTURE=============================================================//
+
+
+
+class Graph {
+private:
+    int numVertices;
+    LinkedList* adjacencyList;
+
+public:
+    Graph(int vertices) : numVertices(vertices) {
+        adjacencyList = new LinkedList[numVertices];
     }
 
-    // Method to perform Breadth-First Search
+    void addEdge(int source, int destination) {
+        adjacencyList[source].addNode(destination);
+        adjacencyList[destination].addNode(source); // For an undirected graph
+    }
+
+   
     void BFS(int startVertex) {
-        // Array to keep track of visited vertices
         bool* visited = new bool[numVertices]();
 
-        // Create a queue for BFS
-        Queue bfsQueue;
-
-        // Mark the current node as visited and enqueue it
+      
+       Queue bfsQueue;
         visited[startVertex] = true;
         bfsQueue.enqueue(startVertex);
 
-        std::cout << "Breadth-First Search starting from vertex " << startVertex << ": ";
+       cout << "Breadth-First Search starting from vertex " << startVertex << ": ";
 
         while (!bfsQueue.isEmpty()) {
-            // Dequeue a vertex from the queue and print it
-            int currentVertex = bfsQueue.dequeue();
+           
+            int currentVertex = bfsQueue.frontnode()->data;
             std::cout << currentVertex << " ";
 
-            // Enqueue all adjacent vertices of the dequeued vertex that are not yet visited
-            for (Node* neighbor = adjacencyList[currentVertex]; neighbor != nullptr; neighbor = neighbor->next) {
+            bfsQueue.dequeue();
+            for (Node* neighbor = adjacencyList[currentVertex].head; neighbor != nullptr; neighbor = neighbor->next) {
                 int neighborVertex = neighbor->data;
                 if (!visited[neighborVertex]) {
                     visited[neighborVertex] = true;
@@ -126,36 +168,21 @@ public:
         std::cout << std::endl;
     }
 
-    // Destructor to free allocated memory
+   
     ~Graph() {
-        for (int i = 0; i < numVertices; ++i) {
-            delete[] adjacencyMatrix[i];
-            Node* current = adjacencyList[i];
-            while (current != nullptr) {
-                Node* next = current->next;
-                delete current;
-                current = next;
-            }
-        }
-        delete[] adjacencyMatrix;
         delete[] adjacencyList;
     }
 };
 
 int main() {
-    // Creating a graph with 4 vertices
     Graph graph(4);
-
-    // Adding edges to the graph
     graph.addEdge(0, 1);
     graph.addEdge(0, 2);
     graph.addEdge(1, 2);
-    graph.addEdge(2, 0);
     graph.addEdge(2, 3);
-    graph.addEdge(3, 3);
-
-    // Perform BFS starting from vertex 2
-    graph.BFS(2);
-
+    graph.BFS(0);
     return 0;
 }
+
+
+
