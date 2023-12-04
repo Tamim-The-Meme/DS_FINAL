@@ -19,6 +19,10 @@ int G_number;
 int G_total;
 int G_START;
 int G_END;
+int MOVEMENTSMADE = 0;
+bool GAMEEDED = false;
+int SCORE = 0;
+string GAMESTATUS = "";
 //======================================================DEFAULT NODE BLOCK=========================================//
 struct Node {
     int data;
@@ -30,15 +34,36 @@ struct Node {
     Node* right;
     char charact;
     int weight;
+    bool isshortestpath;
+
+    int QUEUENODE;
+    char QUEUECHARACT;
 
     Node(int value) : data(value), next(nullptr) {
         charact = '_';
         level = 0;
         top = bottom = left = right = nullptr;
         weight = 1;
+        isshortestpath = false;
 
     }
 };
+
+
+
+
+//SECOND NODE CLASS FOR HOLDING VALUES OTHER THEN NODES
+//USED TO MAKE CODE EASIER
+
+//=============================== CREATING A SECOND STRUCT TO RETURN MULTIPLE VALUES (PAIRS AND TRIOS ====================================//
+
+struct structure
+{
+    int value1;
+    char value2;
+    string value3;
+};
+
 
 
 //========================================================STACK DATA STRUCTURE========================================================//
@@ -126,7 +151,24 @@ public:
         }
     }
 
+    void enqueue(char charact, int nodevalue)
+    {
+        Node* newNode = new Node(nodevalue);
+        newNode->QUEUENODE = nodevalue;
+        newNode->QUEUECHARACT = charact;
+        if (isEmpty()) {
+            front = rear = newNode;
+        }
+        else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
+
   
+
+
+
     int dequeue() {
         if (isEmpty()) {
             std::cerr << "Error: Queue is empty." << std::endl;
@@ -146,6 +188,31 @@ public:
         delete temp;
         return value;
     }
+
+
+    structure dequeue2() {
+        if (isEmpty()) {
+            std::cerr << "Error: Queue is empty." << std::endl;
+            structure temp;
+            temp.value1 = -100;
+            return temp;
+        }
+        structure ret;
+        ret.value1 = front->QUEUENODE;
+        ret.value2 = front->QUEUECHARACT;
+        Node* temp = front;
+
+        if (front == rear) {
+            front = rear = nullptr;
+        }
+        else {
+            front = front->next;
+        }
+
+        delete temp;
+        return ret;
+    }
+
 
    /* ~Queue() {
         while (!isEmpty()) {
@@ -260,6 +327,39 @@ public:
         }
     }
 
+
+    bool search(int val)
+    {
+        bool found = false;
+        Node* curr = head;
+        while (curr)
+        {
+            if (curr->data == val) 
+            {
+                found = true;
+                break;
+            }
+            curr = curr->next;
+        }
+
+        return found;
+    }
+
+
+    int iterate(int index)
+    {
+        Node* curr = head;
+        int i = 0;
+        while (curr)
+        {
+            if ( i == index) break;
+            curr = curr->next;
+            i++;
+        }
+        return curr->data;
+    }
+
+   
   
 };
 
@@ -273,6 +373,8 @@ private:
     int numVertices;
     LinkedList* adjacencyList;
     LinkedList gnodes;
+
+    Queue obstacles;
 
 public:
 
@@ -326,10 +428,17 @@ public:
         {
             if (currnode->top)
             {
-                if (currnode->top->charact == '#' || currnode->top->charact == '&')
+                if (currnode->top->charact == '#' || currnode->top->charact == '&' || currnode->top->charact == '+' || currnode->top->charact == 'P' || currnode->top->charact == 'O')
                 {
                     carnode = carnode - G_number;
-                    cout << "[TESTING] MOVE A" << endl;
+                    SCORE--;
+                    MOVEMENTSMADE++;
+                     
+                    if (MOVEMENTSMADE % 2 == 0 && !obstacles.isEmpty() )
+                    {
+                        structure temp = obstacles.dequeue2();
+                        updataobstacles(temp.value1, temp.value2);
+                    }
                     return true;
                 }
                 else return false;
@@ -342,22 +451,27 @@ public:
         {
             if (currnode->bottom)
             {
-                if (currnode->bottom->charact == '#' || currnode->bottom->charact == '&')
+                if (currnode->bottom->charact == '#' || currnode->bottom->charact == '&'||currnode->bottom->charact == '+' || currnode->bottom->charact == 'O' || currnode->bottom->charact == 'P')
                 {
                     carnode = carnode + G_number;
-                    cout << "[TESTING] MOVE D" << endl;
+                    SCORE--;
+                    MOVEMENTSMADE++;
+                    if (MOVEMENTSMADE % 3 == 0 && obstacles.isEmpty() == false)
+                    {
+                        structure temp = obstacles.dequeue2();
+                        updataobstacles(temp.value1, temp.value2);
+                    }
                     return true;
                 }
                 else 
                 {
-                    cout << " [TESTING] THERE IS NO PATH." << endl;
-                    cout << "currnodes bottom is: " << currnode->bottom << " characted: " << currnode->bottom->charact << endl;
+                  
                     return false;
                 }
             }
             else 
             {
-                cout << " [TESTING] THERE IS NO BOTTOM." << endl;
+                
                 return false;
             }
         }
@@ -366,10 +480,16 @@ public:
         {
             if (currnode->left)
             {
-                if (currnode->left->charact == '#' || currnode->left->charact == '&')
+                if (currnode->left->charact == '#' || currnode->left->charact == '&' || currnode->left->charact == '+' || currnode->left->charact == 'O' || currnode->left->charact == 'P')
                 {
                     carnode = carnode - 1;
-                    cout << "[TESTING] MOVE DL" << endl;
+                    SCORE--;
+                    MOVEMENTSMADE++;
+                    if (MOVEMENTSMADE % 3 == 0 && obstacles.isEmpty() == false)
+                    {
+                        structure temp = obstacles.dequeue2();
+                        updataobstacles(temp.value1, temp.value2);
+                    }
                     return true;
                 }
                 else return false;
@@ -381,10 +501,16 @@ public:
         {
             if (currnode->right)
             {
-                if (currnode->right->charact == '#' || currnode->right->charact == '&')
+                if (currnode->right->charact == '#' || currnode->right->charact == '&' || currnode->right->charact == '+' || currnode->right->charact == 'O' || currnode->right->charact == 'P')
                 {
                     carnode = carnode + 1;
-                    cout << "[TESTING] MOVE RIGHT" << endl;
+                    SCORE--;
+                    MOVEMENTSMADE++;
+                    if (MOVEMENTSMADE % 3 == 0 && obstacles.isEmpty() == false)
+                    {
+                        structure temp = obstacles.dequeue2();
+                        updataobstacles(temp.value1, temp.value2);
+                    }
                     return true;
                 }
                 else return false;
@@ -690,13 +816,149 @@ public:
 
 
 
+    void updateturns(int startVertex) {
+        bool* visited = new bool[numVertices]();
 
+
+        Queue bfsQueue;
+        visited[startVertex] = true;
+        bfsQueue.enqueue(startVertex);
+
+
+
+        while (!bfsQueue.isEmpty()) {
+
+            int currentVertex = bfsQueue.frontnode()->data;
+
+            Node* currnodes = gnodes.head;
+            while (currnodes)
+            {
+                if (currnodes->data == startVertex) break;
+                currnodes = currnodes->next;
+            }
+
+
+            if (currnodes->right)
+
+            {
+                if (currnodes->right->charact == '_' && currnodes->charact == '_')
+                {
+                    currnodes->charact = '+';
+                }
+                if (currnodes->right->charact == '+' && currnodes->charact != '_')
+                {
+                    currnodes->charact = '#';
+                }
+
+            }
+
+            if (currnodes->left)
+
+            {
+                if ( currnodes->left->charact == '_' && currnodes->charact != '_' )
+                {
+                    currnodes->charact = '+';
+
+                }
+                if (currnodes->left->charact == '+' && currnodes->charact != '_')
+                {
+                    currnodes->charact = '#';
+                }
+            }
+
+            if (currnodes->top)
+            {
+                if (currnodes->top->charact == '+' && currnodes->charact != '_')
+                {
+                    currnodes->charact = '#';
+                }
+            }
+
+            if (currnodes->bottom)
+            {
+                if (currnodes->bottom->charact == '+' && currnodes->charact != '_')
+                {
+                    currnodes->charact = '#';
+                }
+            }
+
+
+
+
+            bfsQueue.dequeue();
+            for (Node* neighbor = adjacencyList[currentVertex].head; neighbor != nullptr; neighbor = neighbor->next) {
+                int neighborVertex = neighbor->data;
+                if (!visited[neighborVertex]) {
+                    Node* currnode = gnodes.head;
+                    while (currnode)
+                    {
+                        if (currnode->data == neighborVertex) break;
+                        currnode = currnode->next;
+                    }
+         
+                    if (currnode->right)
+
+                    {
+                        if (currnode->right->charact == '_' && currnode->charact != '_')
+                        {
+                            currnode->charact = '+';
+                        }
+
+                        if (currnode->right->charact == '+' && currnode->charact != '_')
+                        {
+                            currnode->charact = '#';
+                        }
+                    }
+
+                    if (currnode->left)
+
+                    {
+                        if (currnode->left->charact == '_' && currnode->charact != '_')
+                        {
+                            currnode->charact = '+';
+                        }
+
+                        if (currnode->left->charact == '+' && currnode->charact != '_')
+                        {
+                            currnode->charact = '#';
+                        }
+                    }
+
+
+                    if (currnode->top)
+                    {
+                        if (currnode->top->charact == '+' && currnode->charact != '_')
+                        {
+                            currnode->charact = '#';
+                        }
+                    }
+
+                    if (currnode->bottom)
+                    {
+                        if (currnode->bottom->charact == '+' && currnode->charact != '_')
+                        {
+                            currnode->charact = '#';
+                        }
+                    }
+
+
+
+
+                    visited[neighborVertex] = true;
+                    bfsQueue.enqueue(neighborVertex);
+                }
+            }
+        }
+
+        //delete[] visited;
+        cout << std::endl;
+    }
 
 
     void displaymap(int startVertex)
     {
 
-        cout << "FUNCTIONS TARTED WITH TOTAL VERTICES: " << numVertices << endl;
+        cout << "FUNCTION STARTED WITH TOTAL VERTICES: " << numVertices << endl;
         int skip = 0;
 
         for (int i = 0; i < sqrt(numVertices); i++)
@@ -714,8 +976,11 @@ public:
                             if (currnode->data == carnode && gamestarted == true) cout << 'C';
                             else if (currnode->data == G_START) cout << 'S';
                             else if (currnode->data == G_END) cout << 'E';
-                            else if (currnode->charact == '&' && displayshortestpath == true) cout << '$';
-                            else if (currnode->charact == '&' && displayshortestpath == false) cout << '.';
+                            else if (currnode->isshortestpath == true && displayshortestpath == true) cout << '$';
+                            else if (currnode->charact == 'O') cout << 'O';
+                            else if (currnode->charact == 'P') cout << 'P';
+                            else if (currnode->charact == '+') cout << '+';
+                            else if (currnode->isshortestpath == true && displayshortestpath == false) cout << '.';
                             else if (i % 2 == 0 && currnode->charact != '_')  cout << '.';
                             else if  (i % 2 != 0 && currnode->charact != '_')cout << ".";
                             else cout << " ";
@@ -791,7 +1056,7 @@ public:
                     if (i == randomNumber || i == randomNumber + 1 || i == randomNumber - 1 || i == randomNumber + 2)
                     {
                         currnode->charact = '#';
-                        if ( currnode->next) currnode->next->charact = '#';
+                        //if ( currnode->next) currnode->next->charact = '#';
                     }
 
                     dfsStack.push(neighborVertex);
@@ -894,7 +1159,8 @@ public:
                 currnode = currnode->next;
             }
 
-            currnode->charact = '&';
+            currnode->isshortestpath = true;
+            currnode->charact = '#';
 
             return;
         }
@@ -909,22 +1175,162 @@ public:
             currnode = currnode->next;
         }
 
-        currnode->charact = '&';
+        currnode->isshortestpath = true;
+        currnode->charact = '#';
 
     }
 
     void printPath(int startVertex, int endVertex, int* predecessors) {
-        if (endVertex == startVertex) {
-          //cout << startVertex << " ";
-            return;
+        //if (endVertex == startVertex) {
+        //  //cout << startVertex << " ";
+        //    return;
+        //}
+        //printPath(startVertex, predecessors[endVertex], predecessors);
+        ////cout << endVertex << " ";
+    }
+
+    void counttotalpossible(int startVertex) {
+
+        LinkedList* pathnodes = new LinkedList;
+        int pathnumber = 0;
+        bool* visited = new bool[numVertices]();
+        Queue bfsQueue;
+        visited[startVertex] = true;
+        bfsQueue.enqueue(startVertex);
+        while (!bfsQueue.isEmpty()) {
+
+            int currentVertex = bfsQueue.frontnode()->data;
+            Node* currnodes = gnodes.head;
+            while (currnodes)
+            {
+                if (currnodes->data == startVertex) break;
+                currnodes = currnodes->next;
+            }
+
+            if (currnodes)
+            {
+                if (currnodes->charact == '#' || currnodes->charact == '+' || currnodes->charact == '&')
+                {
+                    if ( pathnodes->search( currnodes->data) == false ) 
+                    {
+                        pathnodes->addNode(currnodes->data);
+                        pathnumber++;
+                    }
+                }
+            }
+
+            bfsQueue.dequeue();
+            for (Node* neighbor = adjacencyList[currentVertex].head; neighbor != nullptr; neighbor = neighbor->next) {
+                int neighborVertex = neighbor->data;
+                if (!visited[neighborVertex]) {
+                    Node* currnode = gnodes.head;
+                    while (currnode)
+                    {
+                        if (currnode->data == neighborVertex) break;
+                        currnode = currnode->next;
+                    }
+                    if (currnode)
+                    {
+                        if (currnode->charact == '#' || currnode->charact == '+' || currnode->charact == '&')
+                        {
+                            if (pathnodes->search(currnode->data) == false)
+                            {
+                                pathnodes->addNode(currnode->data);
+                                pathnumber++;
+                            }
+                        }
+                    }
+
+                    visited[neighborVertex] = true;
+                    bfsQueue.enqueue(neighborVertex);
+                }
+            }
         }
-        printPath(startVertex, predecessors[endVertex], predecessors);
-        //cout << endVertex << " ";
+
+
+    //==========================================CREATING THE RANDOM OBJECT==============================================//
+        srand(time(0));
+
+     
+       for ( int  j= 0; j < G_number/2; j++)
+        {
+           int randnumber = (rand() % pathnodes->num - 2) + 1;
+            int ran = rand() % 2;
+
+            if (ran == 0)
+            {
+                int num = pathnodes->iterate(randnumber);
+               
+               
+                obstacles.enqueue('O', num);
+            }
+
+            if (ran == 1)
+            {
+                int num = pathnodes->iterate(randnumber);
+               
+                obstacles.enqueue('P', num);
+            }
+            if (ran == 2)
+            {
+                int num = pathnodes->iterate(randnumber);
+                
+                obstacles.enqueue('O', num);
+            }
+        }
+        //delete[] visited;
+    }
+
+    void updataobstacles(int randnumber, char obstacle)
+    {
+        Node* pnode = gnodes.head;
+        int i = 1;
+        while (pnode)
+        {
+            if (i == randnumber) break;
+            pnode = pnode->next;
+            i++;
+        }
+        pnode->charact = obstacle;
     }
 
 
 
+    void updategraphstatus()
+    {
+        Node* currnode = gnodes.head;
+        while (currnode)
+        {
+            if (currnode->data == carnode) break;
+            currnode = currnode->next;
+        }
 
+        if (currnode->charact == 'P')
+        {
+            SCORE += 5;
+            GAMESTATUS = "[POWERUP COLLECTED] 5 SCORES ADDED.";
+            currnode->charact == '#';
+        }
+
+        else if (currnode->charact == 'O')
+        {
+            SCORE -= 5;
+            GAMESTATUS = "[OBSTACLE HIT] 5 SCORES REMOVED.";
+            currnode->charact == '#';
+
+        }
+
+
+        else if (currnode->data == G_END)
+        {
+            GAMEEDED = true;
+
+        }
+
+        else GAMESTATUS = "";
+
+
+    }
    
    ~Graph() {
        cout << "NOTHING DELETED FUCK U" << endl;
@@ -940,6 +1346,8 @@ int main() {
    
 
     int total = number * number;*/
+
+    cout << "Enter grid size:" << endl;
     int number;
     cin >> number;
     Graph graph;
@@ -949,6 +1357,7 @@ int main() {
     G_number = number;
     G_total = total;
 
+    SCORE = total;
     
     
     int x1 = 0; 
@@ -1036,7 +1445,11 @@ int main() {
     carnode = svertes;
     G_START = svertes;
     graph.dijkstra(svertes, total, number, total);
+    
+    graph.updateturns(0);
+    graph.counttotalpossible(1);
     graph.displaymap(0);
+
 
 
 
@@ -1059,6 +1472,7 @@ int main() {
         {
             //cout << "\n\n\n\n\n\n\n";
             system("cls");
+            graph.updategraphstatus();
 
             cout << "GAME LEGEND: " << endl;
             cout << ". Moveable Path" << endl;
@@ -1073,6 +1487,9 @@ int main() {
             cout << "MOVE ABOVE: W" << endl;
             cout << "MOVE DOWN: D" << endl;
             cout << "Show shortest path: P" << endl;
+            cout << endl << GAMESTATUS << endl;
+            cout << "\n\n\n";
+            cout << "SCORE: " << SCORE << endl;
             
             char movement_option;
             cin >> movement_option;
