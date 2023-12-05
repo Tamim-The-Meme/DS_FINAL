@@ -432,6 +432,13 @@ public:
         }
         if (move == 0)  //above
         {
+
+            /*
+             carnode = carnode - G_number; top
+             carnode = carnode + G_number; below
+             carnode = carnode + 1 left 
+             carnode = carnode + 1 right
+            */
             if (currnode->top)
             {
                 if (currnode->top->charact == '#' || currnode->top->charact == '&' || currnode->top->charact == '+' || currnode->top->charact == 'P' || currnode->top->charact == 'O')
@@ -1366,6 +1373,103 @@ public:
 
 
     }
+
+
+
+    void automove()
+    {
+
+        LinkedList visted;
+        
+
+        Node* curr = gnodes.head;
+        while (curr)
+        {
+            if (curr->data == carnode) break;
+            curr = curr->next;
+        }
+        visted.addNode(curr->data);
+
+        bool reachedend = false;
+        while( reachedend == false)
+        {
+            system("cls");
+            if (carnode == G_END)
+            {
+                reachedend = true;
+                break;
+            }
+
+            curr = gnodes.head;
+            while (curr)
+            {
+                if (curr->data == carnode) break;
+                curr = curr->next;
+            }
+
+
+            /*   carnode = carnode - G_number; top
+                   carnode = carnode + G_number; below
+                   carnode = carnode - 1 left
+                   carnode = carnode + 1 right*/
+
+            if (curr->bottom)
+            {
+                cout << curr->bottom->isshortestpath << " [TESTING BOTTOM]" << endl;
+                bool temp = visted.search(curr->bottom->data);
+                if (curr->bottom->isshortestpath == true && temp == false)
+                {
+                    carnode = carnode + G_number;
+                    cout << "[MOVED BOTTOM]" << endl;
+                    visted.addNode(curr->bottom->data);
+                }
+            }
+
+            if (curr->left)
+            {
+                cout << curr->left->isshortestpath << " [TESTING LEFT]" << endl;
+                bool temp = visted.search(curr->left->data);
+                if (curr->left->isshortestpath == true && temp == false)
+                {
+                    carnode = carnode - 1;
+                    cout << "[MOVED LEFT]" << endl;
+                    visted.addNode(curr->left->data);
+                }
+            }
+
+            if (curr->right)
+            {
+                cout << curr->right->isshortestpath << " [TESTING RIGHT]" << endl;
+                bool temp = visted.search(curr->right->data);
+                if (curr->right->isshortestpath == true && temp == false)
+                {
+                    carnode = carnode + 1;
+                    cout << "[MOVED RIGH]T" << endl;
+                    visted.addNode(curr->right->data);
+                }
+            }
+
+            if (curr->top)
+            {
+                cout << curr->top->isshortestpath << " [TESTING TOP]" << endl;
+                bool temp = visted.search(curr->top->data);
+                if (curr->top->isshortestpath == true && temp == false)
+                {
+                    carnode = carnode - G_number;
+                    cout << "[MOVED TOP]" << endl;
+                    visted.addNode(curr->top->data);
+                }
+            }
+
+
+            updategraphstatus();
+            
+
+            displaymap(0);
+            system("timeout /nobreak /t 1 >nul");
+        }
+
+    }
    
    ~Graph() {
       
@@ -1555,7 +1659,11 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
     cout << "||---------------------------------------||" << endl;
     cout << "               1. START GAME" << endl;
-    cout << "               2. EXIT" << endl;
+
+    //EDIT LAST
+
+    cout << "               2. AUTOMATIC MOVE" << endl;
+    cout << "               3. EXIT" << endl;
     cout << "||---------------------------------------||" << endl;
 
     gamestarted = true;
@@ -1602,7 +1710,7 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
             cout << "SCORE: " << SCORE << endl;
 
             
-            cout << "                     __" << endl;
+                cout << "                     __" << endl;
                 cout << "               _.--""  |" << endl;
                 cout << ".----.     _.-'   |/\| |.--." << endl;
                 cout << "|HUZAIFA|__.-'   _________|  |_)  _______________  " << endl;
@@ -1635,14 +1743,22 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
                 case 77: // Right arrow key
                     graph.validatemovement(2);
                     break;
+               
                 case 'p':
                     displayshortestpath = !displayshortestpath;
+                    
+                    break;
+
+                case 'o':
+                    displayshortestpath = true;
                     break;
                 default:
                     cout << "";
                   
                 }
             }
+
+         
 
           
         }
@@ -1690,6 +1806,14 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
 
         //========================================================================================================================/
+
+
+    }
+
+    if (choice == 2)
+    {
+       
+        graph.automove();
 
 
     }
