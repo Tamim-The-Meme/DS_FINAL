@@ -1617,6 +1617,8 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
             //==============VALIDATE MOVEMENTS==============//
             char key;
+
+            waitForKeypress();
             if (_kbhit()) {
                 key = _getch();
 
@@ -1642,7 +1644,6 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
                 }
             }
 
-            waitForKeypress();
           
         }
 
