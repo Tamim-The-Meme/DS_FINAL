@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <conio.h>
 
 using namespace std;
 
@@ -1372,6 +1373,29 @@ public:
     }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+void waitForKeypress() {
+    while (!_kbhit()) {
+        // Wait for a key press
+    }
+    _getch();  // Clear the keypress from the buffer
+}
+
+
+
+
+
 int main() {
 
 
@@ -1524,6 +1548,7 @@ int main() {
     int choice;
     cin >> choice;
     int exit = 0;
+    int update = 0;
     if (choice == 1)
     {
         while( lastnode == false)
@@ -1533,6 +1558,11 @@ int main() {
                 system("cls");
                 break;
             }
+
+
+            
+
+
             //cout << "\n\n\n\n\n\n\n";
             system("cls");
             graph.updategraphstatus();
@@ -1556,30 +1586,62 @@ int main() {
             
             cout << "SCORE: " << SCORE << endl;
             
-            char movement_option;
-            cin >> movement_option;
-            if (movement_option == 'w') 
-            {
-                graph.validatemovement(0);
-            }
-            if (movement_option == 'a') 
-            {
-                graph.validatemovement(3);
-            }
-            if (movement_option == 's') 
-            {
-                graph.validatemovement(1);
-            }
-            if (movement_option == 'd') 
-            {
-                graph.validatemovement(2);
+
+
+            //==============VALIDATE MOVEMENTS==============//
+            char key;
+            if (_kbhit()) {
+                key = _getch();
+
+                switch (key) {
+                case 72: // Up arrow key
+                    graph.validatemovement(0);
+                    break;
+                case 80: // Down arrow key
+                    graph.validatemovement(1);
+                    break;
+                case 75: // Left arrow key
+                    graph.validatemovement(3);
+                    break;
+                case 77: // Right arrow key
+                    graph.validatemovement(2);
+                    break;
+                case 'p':
+                    displayshortestpath = !displayshortestpath;
+                    break;
+                default:
+                    cout << "";
+                  
+                }
             }
 
-            if (movement_option == 'p')
-            {
-                displayshortestpath = !displayshortestpath;
-            }
+            waitForKeypress();
+          
         }
+
+        /* char movement_option;
+           cin >> movement_option;
+           if (movement_option == 'w')
+           {
+               graph.validatemovement(0);
+           }
+           if (movement_option == 'a')
+           {
+               graph.validatemovement(3);
+           }
+           if (movement_option == 's')
+           {
+               graph.validatemovement(1);
+           }
+           if (movement_option == 'd')
+           {
+               graph.validatemovement(2);
+           }
+
+           if (movement_option == 'p')
+           {
+               displayshortestpath = !displayshortestpath;
+           }*/
 
 
 
@@ -1604,6 +1666,7 @@ int main() {
 
     }
     //====================================================================================================//
+
 
 
     
