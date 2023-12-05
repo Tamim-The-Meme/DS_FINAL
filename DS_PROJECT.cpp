@@ -1,9 +1,10 @@
-
-//UPDATED 10:32
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
 #include <conio.h>
+#include <fstream>
+#include <windows.h>
+#include <string>
 
 using namespace std;
 
@@ -74,17 +75,17 @@ struct structure
 //========================================================STACK DATA STRUCTURE========================================================//
 class Stack {
 public:
-   
+
     Node* topNode;
 
 
     Stack() : topNode(nullptr) {}
 
-   /* ~Stack() {
-        while (!isEmpty()) {
-            pop();
-        }
-    }*/
+    /* ~Stack() {
+         while (!isEmpty()) {
+             pop();
+         }
+     }*/
 
     void push(int value) {
         Node* newNode = new Node(value);
@@ -129,7 +130,7 @@ private:
 public:
     Queue() : front(nullptr), rear(nullptr) {}
 
-  
+
 
     Node* frontnode()
     {
@@ -144,7 +145,7 @@ public:
         return front == nullptr;
     }
 
-  
+
     void enqueue(int value) {
         Node* newNode = new Node(value);
         if (isEmpty()) {
@@ -170,14 +171,14 @@ public:
         }
     }
 
-  
+
 
 
 
     int dequeue() {
         if (isEmpty()) {
             std::cerr << "Error: Queue is empty." << std::endl;
-            return -1; 
+            return -1;
         }
 
         int value = front->data;
@@ -219,11 +220,11 @@ public:
     }
 
 
-   /* ~Queue() {
-        while (!isEmpty()) {
-            dequeue();
-        }
-    }*/
+    /* ~Queue() {
+         while (!isEmpty()) {
+             dequeue();
+         }
+     }*/
 };
 
 
@@ -303,7 +304,7 @@ private:
 
 class LinkedList {
 private:
- 
+
 public:
     Node* head;
     int num;
@@ -321,7 +322,7 @@ public:
     void addNode(int value, char destination) {
         Node* newNode = new Node(value);
         newNode->next = head;
-        head = newNode;   
+        head = newNode;
     }
 
     void displayList() {
@@ -339,7 +340,7 @@ public:
         Node* curr = head;
         while (curr)
         {
-            if (curr->data == val) 
+            if (curr->data == val)
             {
                 found = true;
                 break;
@@ -357,7 +358,7 @@ public:
         int i = 0;
         while (curr)
         {
-            if ( i == index) break;
+            if (i == index) break;
             curr = curr->next;
             i++;
         }
@@ -367,8 +368,8 @@ public:
         else return 4;
     }
 
-   
-  
+
+
 };
 
 
@@ -395,7 +396,7 @@ public:
     }
     Graph(int vertices) : numVertices(vertices) {
         adjacencyList = new LinkedList[numVertices];
-        for (int i = 0 ; i < numVertices ;i++)
+        for (int i = 0; i < numVertices; i++)
         {
             gnodes.addNode(i);
         }
@@ -410,7 +411,7 @@ public:
         {
             gnodes.addNode(i);
 
-            
+
         }
 
     }
@@ -434,13 +435,6 @@ public:
         }
         if (move == 0)  //above
         {
-
-            /*
-             carnode = carnode - G_number; top
-             carnode = carnode + G_number; below
-             carnode = carnode + 1 left 
-             carnode = carnode + 1 right
-            */
             if (currnode->top)
             {
                 if (currnode->top->charact == '#' || currnode->top->charact == '&' || currnode->top->charact == '+' || currnode->top->charact == 'P' || currnode->top->charact == 'O')
@@ -448,8 +442,8 @@ public:
                     carnode = carnode - G_number;
                     SCORE--;
                     MOVEMENTSMADE++;
-                     
-                    if (MOVEMENTSMADE % 2 == 0 && !obstacles.isEmpty() )
+
+                    if (MOVEMENTSMADE % 2 == 0 && !obstacles.isEmpty())
                     {
                         structure temp = obstacles.dequeue2();
                         updataobstacles(temp.value1, temp.value2);
@@ -466,7 +460,7 @@ public:
         {
             if (currnode->bottom)
             {
-                if (currnode->bottom->charact == '#' || currnode->bottom->charact == '&'||currnode->bottom->charact == '+' || currnode->bottom->charact == 'O' || currnode->bottom->charact == 'P')
+                if (currnode->bottom->charact == '#' || currnode->bottom->charact == '&' || currnode->bottom->charact == '+' || currnode->bottom->charact == 'O' || currnode->bottom->charact == 'P')
                 {
                     carnode = carnode + G_number;
                     SCORE--;
@@ -478,15 +472,15 @@ public:
                     }
                     return true;
                 }
-                else 
+                else
                 {
-                  
+
                     return false;
                 }
             }
-            else 
+            else
             {
-                
+
                 return false;
             }
         }
@@ -627,12 +621,12 @@ public:
         visited[startVertex] = true;
         bfsQueue.enqueue(startVertex);
 
-  
+
 
         while (!bfsQueue.isEmpty()) {
 
             int currentVertex = bfsQueue.frontnode()->data;
-          
+
             Node* currnodes = gnodes.head;
             while (currnodes)
             {
@@ -658,7 +652,7 @@ public:
                         if (currnode->data == neighborVertex) break;
                         currnode = currnode->next;
                     }
-                   
+
 
                     if (!currnode->right)
                     {
@@ -673,7 +667,7 @@ public:
             }
         }
 
-       // delete[] visited;
+        // delete[] visited;
         cout << std::endl;
     }
 
@@ -684,23 +678,23 @@ public:
 
 
 
-  
 
-   
+
+
     void BFS(int startVertex) {
         bool* visited = new bool[numVertices]();
 
-      
-       Queue bfsQueue;
+
+        Queue bfsQueue;
         visited[startVertex] = true;
         bfsQueue.enqueue(startVertex);
 
-       
+
 
         while (!bfsQueue.isEmpty()) {
-           
+
             int currentVertex = bfsQueue.frontnode()->data;
-            
+
             Node* currnodes = gnodes.head;
             while (currnodes)
             {
@@ -870,7 +864,7 @@ public:
             if (currnodes->left)
 
             {
-                if ( currnodes->left->charact == '_' && currnodes->charact != '_' )
+                if (currnodes->left->charact == '_' && currnodes->charact != '_')
                 {
                     currnodes->charact = '+';
 
@@ -910,7 +904,7 @@ public:
                         if (currnode->data == neighborVertex) break;
                         currnode = currnode->next;
                     }
-         
+
                     if (currnode->right)
 
                     {
@@ -977,7 +971,7 @@ public:
         int skip = 0;
 
         cout << "      ";
-        for (int i = 0; i < G_number*2 + 2; i++)
+        for (int i = 0; i < G_number * 2 + 2; i++)
         {
             cout << "_";
         }
@@ -987,52 +981,52 @@ public:
         int ski = 0;
         for (int i = 0; i < sqrt(numVertices) - 1; i++)
         {
-           
+
             Node* currnode = gnodes.head;
-            
+
             while (currnode)
             {
-               
-                    /*if (currnode->right != nullptr)
-                        if (currnode->right->data == -1 && currnode->level == i) cout << " ";*/
-                    if ( skip > 0)
+
+                /*if (currnode->right != nullptr)
+                    if (currnode->right->data == -1 && currnode->level == i) cout << " ";*/
+                if (skip > 0)
+                {
+                    if (currnode->level == i)
                     {
-                        if (currnode->level == i) 
-                        {
-                            if (currnode->data == carnode && gamestarted == true) cout << 'C';
-                            else if (currnode->data == G_START) cout << 'S';
-                            else if (currnode->data == G_END) cout << 'E';
-                            else if (currnode->isshortestpath == true && displayshortestpath == true) cout << '$';
-                            else if (currnode->charact == 'O') cout << 'O';
-                            else if (currnode->charact == 'P') cout << 'P';
-                            else if (currnode->charact == '+') cout << '+';
-                            else if (currnode->isshortestpath == true && displayshortestpath == false) cout << '.';
-                            else if (currnode->charact == '#') cout << '.';
-                            else if (i % 2 == 0 && currnode->charact != '_')  cout << '.';
-                            else if  (i % 2 != 0 && currnode->charact != '_')cout << ".";
-                            else cout << " ";
+                        if (currnode->data == carnode && gamestarted == true) cout << 'C';
+                        else if (currnode->data == G_START) cout << 'S';
+                        else if (currnode->data == G_END) cout << 'E';
+                        else if (currnode->isshortestpath == true && displayshortestpath == true) cout << '$';
+                        else if (currnode->charact == 'O') cout << 'O';
+                        else if (currnode->charact == 'P') cout << 'P';
+                        else if (currnode->charact == '+') cout << '+';
+                        else if (currnode->isshortestpath == true && displayshortestpath == false) cout << '.';
+                        else if (currnode->charact == '#') cout << '.';
+                        else if (i % 2 == 0 && currnode->charact != '_')  cout << '.';
+                        else if (i % 2 != 0 && currnode->charact != '_')cout << ".";
+                        else cout << " ";
 
 
-                            cout << " ";
-                           // cout << currnode->charact;
-                        }
+                        cout << " ";
+                        // cout << currnode->charact;
                     }
+                }
 
-                    currnode = currnode->next;
+                currnode = currnode->next;
 
-                    skip++;
-               
+                skip++;
+
             }
-           
-                cout << "|";
-                cout << endl;
-                cout << "      |";
-            
 
-           
+            cout << "|";
+            cout << endl;
+            cout << "      |";
+
+
+
 
         }
-        for (int i2 = 0; i2 < G_number * 2 ; i2++)
+        for (int i2 = 0; i2 < G_number * 2; i2++)
         {
             cout << "_";
         }
@@ -1060,8 +1054,8 @@ public:
             int currentVertex = dfsStack.topNode->data;
             dfsStack.pop();
             int tempdiv = adjacencyList[currentVertex].num;
-           
-           /* cout << adjacencyList[currentVertex].head->data << " - > " << tempdiv << endl;*/
+
+            /* cout << adjacencyList[currentVertex].head->data << " - > " << tempdiv << endl;*/
             if (tempdiv == 0)
             {
                 tempdiv = 1;
@@ -1071,12 +1065,12 @@ public:
 
 
             int randomNumber = rand() % tempdiv;
-           
+
             int i = 0;
             for (Node* neighbor = adjacencyList[currentVertex].head; neighbor != nullptr; neighbor = neighbor->next) {
                 int neighborVertex = neighbor->data;
 
-                
+
                 if (!visited[neighborVertex]) {
                     visited[neighborVertex] = true;
 
@@ -1100,8 +1094,8 @@ public:
 
                     dfsStack.push(neighborVertex);
 
-                    
-                    
+
+
 
 
                 }
@@ -1112,8 +1106,10 @@ public:
         }
 
         //delete[] visited;
-       
+
     }
+
+   
 
 
     //=============================================================DJISKIRTIS ALGORITHM===============================================================//
@@ -1157,17 +1153,17 @@ public:
         }
 
         cout << "Shortest distances from vertex " << startVertex << ":\n";
-        
+
         srand(time(0));
-       
+
 
         int evertex = (rand() % number) + (total - number);
 
 
         G_END = evertex;
 
-      
-        
+
+
         /*for (int i = 0; i < numVertices - 2; ++i) {
             cout << "To vertex " << i << ": " << distances[i] << " - Path: ";
             printPath(startVertex, i, predecessors);
@@ -1190,7 +1186,7 @@ public:
     void createPath(int startVertex, int endVertex, int* predecessors)
     {
         if (endVertex == startVertex) {
-           // cout << startVertex << " ";
+            // cout << startVertex << " ";
             Node* currnode = gnodes.head;
             while (currnode)
             {
@@ -1204,9 +1200,9 @@ public:
             return;
         }
 
-       
+
         createPath(startVertex, predecessors[endVertex], predecessors);
-       // cout << endVertex << " ";
+        // cout << endVertex << " ";
         Node* currnode = gnodes.head;
         while (currnode)
         {
@@ -1250,7 +1246,7 @@ public:
             {
                 if (currnodes->charact == '#' || currnodes->charact == '+' || currnodes->charact == '&')
                 {
-                    if ( pathnodes->search( currnodes->data) == false ) 
+                    if (pathnodes->search(currnodes->data) == false)
                     {
                         pathnodes->addNode(currnodes->data);
                         pathnumber++;
@@ -1287,33 +1283,33 @@ public:
         }
 
 
-    //==========================================CREATING THE RANDOM OBJECT==============================================//
+        //==========================================CREATING THE RANDOM OBJECT==============================================//
         srand(time(0));
 
-     
-       for ( int  j= 0; j < G_number/2; j++)
+
+        for (int j = 0; j < G_number / 2; j++)
         {
-           int randnumber = (rand() % pathnodes->num - 2) + 1;
+            int randnumber = (rand() % pathnodes->num - 2) + 1;
             int ran = rand() % 2;
 
             if (ran == 0)
             {
                 int num = pathnodes->iterate(randnumber);
-               
-               
+
+
                 obstacles.enqueue('O', num);
             }
 
             if (ran == 1)
             {
                 int num = pathnodes->iterate(randnumber);
-               
+
                 obstacles.enqueue('P', num);
             }
             if (ran == 2)
             {
                 int num = pathnodes->iterate(randnumber);
-                
+
                 obstacles.enqueue('O', num);
             }
         }
@@ -1330,7 +1326,7 @@ public:
             pnode = pnode->next;
             i++;
         }
-        if ( pnode->charact ) pnode->charact = obstacle;
+        if (pnode->charact) pnode->charact = obstacle;
     }
 
 
@@ -1362,11 +1358,11 @@ public:
 
         else if (currnode->data == G_END)
         {
-           //
+            //
             GAMEENDED = 1;
             lastnode = true;
             GAMESTATUS = "[END] GOOD JOB! GAME HAS ENDED PRESS ANY KEY TO CONTINUE";
-           
+
 
 
         }
@@ -1376,108 +1372,218 @@ public:
 
     }
 
+    ~Graph() {
 
 
-    void automove()
-    {
-
-        LinkedList visted;
-        
-
-        Node* curr = gnodes.head;
-        while (curr)
-        {
-            if (curr->data == carnode) break;
-            curr = curr->next;
-        }
-        visted.addNode(curr->data);
-
-        bool reachedend = false;
-        while( reachedend == false)
-        {
-            system("cls");
-            if (carnode == G_END)
-            {
-                reachedend = true;
-                break;
-            }
-
-            curr = gnodes.head;
-            while (curr)
-            {
-                if (curr->data == carnode) break;
-                curr = curr->next;
-            }
-
-
-            /*   carnode = carnode - G_number; top
-                   carnode = carnode + G_number; below
-                   carnode = carnode - 1 left
-                   carnode = carnode + 1 right*/
-
-            if (curr->bottom)
-            {
-                cout << curr->bottom->isshortestpath << " [TESTING BOTTOM]" << endl;
-                bool temp = visted.search(curr->bottom->data);
-                if (curr->bottom->isshortestpath == true && temp == false)
-                {
-                    carnode = carnode + G_number;
-                    cout << "[MOVED BOTTOM]" << endl;
-                    visted.addNode(curr->bottom->data);
-                }
-            }
-
-            if (curr->left)
-            {
-                cout << curr->left->isshortestpath << " [TESTING LEFT]" << endl;
-                bool temp = visted.search(curr->left->data);
-                if (curr->left->isshortestpath == true && temp == false)
-                {
-                    carnode = carnode - 1;
-                    cout << "[MOVED LEFT]" << endl;
-                    visted.addNode(curr->left->data);
-                }
-            }
-
-            if (curr->right)
-            {
-                cout << curr->right->isshortestpath << " [TESTING RIGHT]" << endl;
-                bool temp = visted.search(curr->right->data);
-                if (curr->right->isshortestpath == true && temp == false)
-                {
-                    carnode = carnode + 1;
-                    cout << "[MOVED RIGH]T" << endl;
-                    visted.addNode(curr->right->data);
-                }
-            }
-
-            if (curr->top)
-            {
-                cout << curr->top->isshortestpath << " [TESTING TOP]" << endl;
-                bool temp = visted.search(curr->top->data);
-                if (curr->top->isshortestpath == true && temp == false)
-                {
-                    carnode = carnode - G_number;
-                    cout << "[MOVED TOP]" << endl;
-                    visted.addNode(curr->top->data);
-                }
-            }
-
-
-            updategraphstatus();
-            
-
-            displaymap(0);
-            system("timeout /nobreak /t 1 >nul");
-        }
-
-    }
-   
-   ~Graph() {
-      
-      
     }
 };
+
+struct player {
+    string name;
+    int score;
+};
+
+//========================================================BINARY SEARCH TREE========================================================//
+
+class TreeNode {
+public:
+    player data;
+    TreeNode* right;
+    TreeNode* left;
+
+    TreeNode() {
+        right = left = NULL;
+    }
+};
+
+class Tree {
+public:
+    TreeNode* root;
+
+    Tree() {
+        root = NULL;
+    }
+
+    void insertNode(player newPlayer) {
+
+        TreeNode* newNode, * nodePtr; // Pointer to create new node & traverse tree
+
+        newNode = new TreeNode; // Create a new node
+        newNode->data = newPlayer;
+        newNode->left = newNode->right = NULL;
+        if (!root) root = newNode; // If tree is empty.
+
+        else { // Tree is not empty
+            nodePtr = root;
+            while (nodePtr != NULL) {
+                if (newPlayer.score < nodePtr->data.score) { // Left subtree
+                    if (nodePtr->left) {
+                        nodePtr = nodePtr->left;
+                    }
+                    else {
+                        nodePtr->left = newNode;
+                        break;
+                    }
+                }
+                else if (newPlayer.score > nodePtr->data.score) { // Right subtree
+                    if (nodePtr->right) nodePtr = nodePtr->right;
+                    else {
+                        nodePtr->right = newNode;
+                        break;
+                    }
+                }
+                else {
+                    cout << "Duplicate value found in tree.\n";
+                    break;
+                }
+            }
+        }
+    }
+
+    void inorder(TreeNode* node, ofstream &fout) {
+        if (node != NULL) {
+            inorder(node->right, fout);
+            fout << "OldPlayer," << node->data.name << "," << node->data.score << endl;
+            inorder(node->left, fout);
+
+        }
+    }
+
+};
+
+void read(Tree& Leaderboard, player prev) {
+    ifstream fin;
+    fin.open("leaderboard.csv");
+    string line;
+    
+
+    while (getline(fin, line)) {
+        if (line == "\0") {
+            break;
+        }
+        
+        player temp;
+        int foundComma = 0;
+        string tempScore="";
+
+        for (int i = 0; line[i] != '\0'; i++) {
+            
+            if (line[i] == ',') {
+                foundComma++;
+                continue;
+            }
+
+            if (foundComma == 1) {
+                temp.name += line[i];
+            }
+            if (foundComma == 2) {
+                tempScore += line[i];
+            }
+        }
+
+       
+        temp.score = stoi(tempScore);
+        
+        Leaderboard.insertNode(temp);
+    }
+    fin.close();
+}
+
+void printLeaderboard() {
+    
+    ifstream fin("leaderboard.csv");
+    string line;
+    while (getline(fin, line)) {
+        int foundComma = 0;
+        for (int i = 0; line[i] != '\0'; i++) {
+            if (line[i] == ',') {
+                cout << " ";
+                foundComma++;
+                continue;
+            }
+            if (foundComma == 1) {
+                cout << line[i];
+            }
+            if (foundComma == 2) {
+                cout << line[i];
+            }
+        }
+        cout << endl;
+    }
+}
+
+void printLoadingScreen() {
+    system("cls");
+
+    for (int i = 0; i < 2; i++) {
+        cout << R"(							--------------------------
+                    /\\      _____          _____       |   |     |     |    | |  \  
+     ,-----,       /  \\____/__|__\_    ___/__|__\___   |___|_____|_____|____|_|___\ 
+  ,--'---:---`--, /  |  _     |     `| |      |      `| |                    | |    \
+ ==(o)-----(o)==J    `(o)-------(o)=   `(o)------(o)'   `--(o)(o)--------------(o)--'  
+`````````````````````````````````````````````````````````````````````````````````````
+
+		Did you know that Cats are called Cars in Guatemala?
+)";
+
+        Sleep(1000);
+        system("cls");
+
+        cout << R"(--------------------------
+|   |     |     |    | |  \  
+|___|_____|_____|____|_|___\ 
+|                    | |    \
+`--(o)(o)--------------(o)--'  
+`````````````````````````````````````````````````````````````````````````````````````
+
+		Did you know that Eggs came before Chickens?
+)";
+
+
+        Sleep(1000);
+        system("cls");
+
+        cout << R"(	         --------------------------
+     _____       |   |     |     |    | |  \  
+ ___/__|__\___   |___|_____|_____|____|_|___\ 
+|      |      `| |                    | |    \
+ `(o)------(o)'   `--(o)(o)--------------(o)--'  
+`````````````````````````````````````````````````````````````````````````````````````
+
+			Why are Eggs rounded and not cubical?
+)";
+
+        Sleep(1000);
+        system("cls");
+
+        cout << R"(				       --------------------------
+   /\\      _____          _____       |   |     |     |    | |  \  
+  /  \\____/__|__\_    ___/__|__\___   |___|_____|_____|____|_|___\ 
+ /  |  _     |     `| |      |      `| |                    | |    \
+    `(o)-------(o)=   `(o)------(o)'   `--(o)(o)--------------(o)--'  
+`````````````````````````````````````````````````````````````````````````````````````
+
+				Are Eggs actually rich in protein?
+)";
+
+        Sleep(1000);
+        system("cls");
+
+        cout << R"(							--------------------------
+                    /\\      _____          _____       |   |     |     |    | |  \  
+     ,-----,       /  \\____/__|__\_    ___/__|__\___   |___|_____|_____|____|_|___\ 
+  ,--'---:---`--, /  |  _     |     `| |      |      `| |                    | |    \
+ ==(o)-----(o)==J    `(o)-------(o)=   `(o)------(o)'   `--(o)(o)--------------(o)--'  
+`````````````````````````````````````````````````````````````````````````````````````
+
+                     Are Cars Eggs?
+)";
+        Sleep(1000);
+        system("cls");
+    }
+
+
+}
 
 
 
@@ -1504,38 +1610,46 @@ void waitForKeypress() {
 
 int main() {
 
+    player newPlayer;
 
-   /* cout << "Enter the dimension of the grid you want: " << endl;
-    int number;
-   
+    cout << "Enter your username: ";
+    cin >> newPlayer.name;
 
-    int total = number * number;*/
+    Tree Leaderboard;
+    player prev;
+    read(Leaderboard, prev);
 
-    
-
-
-
-
-    //======================= SELECT DIFFICULTY====================//
+    /* cout << "Enter the dimension of the grid you want: " << endl;
+     int number;
 
 
-    cout << "                                         d88b"<< endl;
-cout << "                      _______________|8888|_______________" << endl;
-cout << "                     |_____________ ,~~~~~~. _____________|" << endl;
-cout << "   _________         |_____________: mmmmmm :_____________|         _________" << endl;
-cout << "  / _______ \   ,----|~~~~~~~~~~~,'\ _...._ /`.~~~~~~~~~~~|----,   / _______ "<< endl;
-cout<<" | /       \ |  |    |       |____|,d~    ~b.|____|       |    |  | /       \ |" << endl;
-cout << " ||         |-------------------\-d.-~~~~~~-.b-/-------------------|         ||" << endl;
-cout << " ||         | |8888 ....... _,===~/......... \~===._         8888| |         ||" << endl;
-cout << " ||         |=========_,===~~======._.=~~=._.======~~===._=========|         ||" << endl;
-cout << " ||         | |888===~~ ...... //,, .`~~~~'. .,\\        ~~===888| |         ||" << endl;
-cout << " ||        |===================,P'.::::::::.. `?,===================|        ||" << endl;
-cout << " ||        |_________________,P'_::----------.._`?,_________________|        ||" << endl;
-cout << " `|        |-------------------~~~~~~~~~~~~~~~~~~-------------------|        |'" << endl;
-cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_______/" << endl;
+     int total = number * number;*/
+
+
+    printLoadingScreen();
+    system("cls");
+
+
+     //======================= SELECT DIFFICULTY====================//
+
+
+    cout << "                                         d88b" << endl;
+    cout << "                      _______________|8888|_______________" << endl;
+    cout << "                     |_____________ ,~~~~~~. _____________|" << endl;
+    cout << "   _________         |_____________: mmmmmm :_____________|         _________" << endl;
+    cout << "  / _______ \   ,----|~~~~~~~~~~~,'\ _...._ /`.~~~~~~~~~~~|----,   / _______ " << endl;
+    cout << " | /       \ |  |    |       |____|,d~    ~b.|____|       |    |  | /       \ |" << endl;
+    cout << " ||         |-------------------\-d.-~~~~~~-.b-/-------------------|         ||" << endl;
+    cout << " ||         | |8888 ....... _,===~/......... \~===._         8888| |         ||" << endl;
+    cout << " ||         |=========_,===~~======._.=~~=._.======~~===._=========|         ||" << endl;
+    cout << " ||         | |888===~~ ...... //,, .`~~~~'. .,\\        ~~===888| |         ||" << endl;
+    cout << " ||        |===================,P'.::::::::.. `?,===================|        ||" << endl;
+    cout << " ||        |_________________,P'_::----------.._`?,_________________|        ||" << endl;
+    cout << " `|        |-------------------~~~~~~~~~~~~~~~~~~-------------------|        |'" << endl;
+    cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_______/" << endl;
     cout << "||==================================================================||" << endl;
     cout << "||==================================================================||" << endl;
-    
+
     cout << "||                     ENTER THE DIFFICULTY YOU WANT                ||" << endl;
     cout << "||==================================================================||" << endl;
     cout << "||==================================================================||" << endl;
@@ -1546,7 +1660,7 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
     int dif;
     cin >> dif;
 
-   int number;
+    int number;
     number = dif * 10;
     Graph graph;
     int total = number * number;
@@ -1556,13 +1670,13 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
     G_total = total;
 
     SCORE = total;
-    
-    
-    int x1 = 0; 
+
+
+    int x1 = 0;
     int x2 = 0;
     for (int i = 0; i < total; i++)
     {
-       
+
         if (i < number)
         {
             //RIGHT MOST NODE FORMULA =; i mod number == number - 1;
@@ -1585,11 +1699,11 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
             }
         }
 
-        else 
+        else
         {
             if (i % number == 0)
             {
-               
+
                 graph.addEdge(i, i + 1, 'r');
                 if (i < total - number)  graph.addEdge(i, i + number, 'b');
 
@@ -1599,38 +1713,38 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
             else if (i % number == number - 1)
             {
-               
+
                 graph.addEdge(i, i - 1, ' l');
-         
-                if ( i < total - 1) graph.addEdge(i, i + number, 'b');
+
+                if (i < total - 1) graph.addEdge(i, i + number, 'b');
                 graph.addEdge(i, i - number, 't');
             }
             else
             {
-               
-                  
 
-                if ( i < total - number )  graph.addEdge(i, i + number, 'b');
+
+
+                if (i < total - number)  graph.addEdge(i, i + number, 'b');
                 graph.addEdge(i, i + 1, 'r');
                 graph.addEdge(i, i - 1, 'l');
                 graph.addEdge(i, i - number, 't');
             }
         }
-        
+
     }
 
 
 
-  /*  graph.addEdge(0, 1, 'b');
-    graph.addEdge(1, 2, 'r');
-    graph.addEdge(2, 3, 'r');
-    graph.addEdge(3, 4, 't');
-    graph.addEdge(4, 5, 'r');
-    graph.addEdge(5, 6, 'r');
-    graph.addEdge(6, 7, 'b');*/
-    
+    /*  graph.addEdge(0, 1, 'b');
+      graph.addEdge(1, 2, 'r');
+      graph.addEdge(2, 3, 'r');
+      graph.addEdge(3, 4, 't');
+      graph.addEdge(4, 5, 'r');
+      graph.addEdge(5, 6, 'r');
+      graph.addEdge(6, 7, 'b');*/
 
-    //GENERATION OF GAME MAP KE LIE YE FUNCTIONS
+
+      //GENERATION OF GAME MAP KE LIE YE FUNCTIONS
     graph.BFS(0);   //SETS THE LEVEL
     graph.addspacing(0);    //SPACES MEI EMPTY NODES DALNE KE LIE
     //graph.printnodesonly();     //TESTING KE LIE NODES KI INFO
@@ -1643,7 +1757,7 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
     carnode = svertes;
     G_START = svertes;
     graph.dijkstra(svertes, total, number, total);
-    
+
     graph.updateturns(0);
     graph.counttotalpossible(1);
     graph.displaymap(0);
@@ -1654,18 +1768,14 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
 
     //=========================================GAMEPLAY===================================================//
-   
+
     //TAMIM MAKE THIS MENU MORE AESTHETIC ALSO TRY TO ADD SOUNDS AND STUFF
-    
+
     cout << "GAME GENERATED." << endl;
 
     cout << "||---------------------------------------||" << endl;
     cout << "               1. START GAME" << endl;
-
-    //EDIT LAST
-
-    cout << "               2. AUTOMATIC MOVE" << endl;
-    cout << "               3. EXIT" << endl;
+    cout << "               2. EXIT" << endl;
     cout << "||---------------------------------------||" << endl;
 
     gamestarted = true;
@@ -1676,16 +1786,16 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
     int update = 0;
     if (choice == 1)
     {
-        while( lastnode == false)
+        while (lastnode == false)
         {
-            if (GAMEENDED == 1) 
+            if (GAMEENDED == 1)
             {
                 system("cls");
                 break;
             }
 
 
-            
+
 
 
             //cout << "\n\n\n\n\n\n\n";
@@ -1706,23 +1816,23 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
             cout << "MOVE DOWN: D" << endl;
             cout << "Show shortest path: P" << endl;
             cout << endl << GAMESTATUS << endl;
-           
+
             cout << "\n\n\n";
-            
+
             cout << "SCORE: " << SCORE << endl;
 
-            
-                cout << "                     __" << endl;
-                cout << "               _.--""  |" << endl;
-                cout << ".----.     _.-'   |/\| |.--." << endl;
-                cout << "|HUZAIFA|__.-'   _________|  |_)  _______________  " << endl;
-                cout << "|  .-```-.```` ___,    `----'`))   __   .-``-.````--._  " << endl;
-                cout << "'-' ,--. `    |TAM|   .---.       |:.| ' ,--. `      _`." << endl;
-                cout << " ( (    ) ) __|MIM|__ \\|// _..--  \/ ( (    ) )--._.-." << endl;
-                cout << "  . `--' ;\__________________..--------. `--' ;--------'" << endl;
-                cout << "   `-..-'                               `-..-'" << endl;
 
-            
+            cout << "                     __" << endl;
+            cout << "               _.--""  |" << endl;
+            cout << ".----.     _.-'   |/\| |.--." << endl;
+            cout << "|HUZAIFA|__.-'   _________|  |_)  _______________  " << endl;
+            cout << "|  .-```-.```` ___,    `----'`))   __   .-``-.````--._  " << endl;
+            cout << "'-' ,--. `    |TAM|   .---.       |:.| ' ,--. `      _`." << endl;
+            cout << " ( (    ) ) __|MIM|__ \\|// _..--  \/ ( (    ) )--._.-." << endl;
+            cout << "  . `--' ;\__________________..--------. `--' ;--------'" << endl;
+            cout << "   `-..-'                               `-..-'" << endl;
+
+
 
 
             //==============VALIDATE MOVEMENTS==============//
@@ -1745,24 +1855,16 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
                 case 77: // Right arrow key
                     graph.validatemovement(2);
                     break;
-               
                 case 'p':
                     displayshortestpath = !displayshortestpath;
-                    
-                    break;
-
-                case 'o':
-                    displayshortestpath = true;
                     break;
                 default:
                     cout << "";
-                  
+
                 }
             }
 
-         
 
-          
         }
 
         /* char movement_option;
@@ -1791,7 +1893,7 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
 
 
-        //==============================================WHEN GAME ENDS============================================================//
+           //==============================================WHEN GAME ENDS============================================================//
 
         system("cls");
         cout << "||======================================================||" << endl;
@@ -1800,22 +1902,23 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
         cout << endl;
         cout << "Your score: " << SCORE << endl;
-
+        newPlayer.score = SCORE;
+        Leaderboard.insertNode(newPlayer);
         cout << endl << "LEADERBOARD:" << endl;
 
 
         ///TAMIM DISPLAY LEADERBOARD HERE
 
 
+        ofstream fout;
+        fout.open("leaderboard.csv", ios::out);
+        Leaderboard.inorder(Leaderboard.root, fout);
+        fout.close();
+
+        printLeaderboard();
+
+
         //========================================================================================================================/
-
-
-    }
-
-    if (choice == 2)
-    {
-       
-        graph.automove();
 
 
     }
@@ -1823,9 +1926,8 @@ cout << "   \_______/                  HUZAIFA AND TAMIMS DS PROJECT          \_
 
 
 
-    
+
     return 0;
 }
-
 
 
