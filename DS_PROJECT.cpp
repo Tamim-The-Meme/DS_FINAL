@@ -20,7 +20,9 @@ int G_total;
 int G_START;
 int G_END;
 int MOVEMENTSMADE = 0;
-bool GAMEEDED = false;
+int GAMEENDED = 0;
+
+bool lastnode = false;
 int SCORE = 0;
 string GAMESTATUS = "";
 //======================================================DEFAULT NODE BLOCK=========================================//
@@ -356,7 +358,10 @@ public:
             curr = curr->next;
             i++;
         }
-        return curr->data;
+        if (curr)
+            return  curr->data;
+
+        else return 4;
     }
 
    
@@ -961,9 +966,20 @@ public:
         cout << "FUNCTION STARTED WITH TOTAL VERTICES: " << numVertices << endl;
         int skip = 0;
 
-        for (int i = 0; i < sqrt(numVertices); i++)
+        cout << "      ";
+        for (int i = 0; i < G_number*2 + 2; i++)
         {
+            cout << "_";
+        }
+        cout << endl;
+
+        cout << "      |";
+        int ski = 0;
+        for (int i = 0; i < sqrt(numVertices) - 1; i++)
+        {
+           
             Node* currnode = gnodes.head;
+            
             while (currnode)
             {
                
@@ -981,6 +997,7 @@ public:
                             else if (currnode->charact == 'P') cout << 'P';
                             else if (currnode->charact == '+') cout << '+';
                             else if (currnode->isshortestpath == true && displayshortestpath == false) cout << '.';
+                            else if (currnode->charact == '#') cout << '.';
                             else if (i % 2 == 0 && currnode->charact != '_')  cout << '.';
                             else if  (i % 2 != 0 && currnode->charact != '_')cout << ".";
                             else cout << " ";
@@ -996,9 +1013,21 @@ public:
                     skip++;
                
             }
+           
+                cout << "|";
+                cout << endl;
+                cout << "      |";
+            
 
-           cout << endl;
+           
+
         }
+        for (int i2 = 0; i2 < G_number * 2 ; i2++)
+        {
+            cout << "_";
+        }
+        cout << '|';
+        cout << endl;
 
         cout << "FUNCTION EXITED" << endl;
 
@@ -1291,7 +1320,7 @@ public:
             pnode = pnode->next;
             i++;
         }
-        pnode->charact = obstacle;
+        if ( pnode->charact ) pnode->charact = obstacle;
     }
 
 
@@ -1309,21 +1338,26 @@ public:
         {
             SCORE += 5;
             GAMESTATUS = "[POWERUP COLLECTED] 5 SCORES ADDED.";
-            currnode->charact == '#';
+            currnode->charact = '#';
         }
 
         else if (currnode->charact == 'O')
         {
             SCORE -= 5;
             GAMESTATUS = "[OBSTACLE HIT] 5 SCORES REMOVED.";
-            currnode->charact == '#';
+            currnode->charact = '#';
 
         }
 
 
         else if (currnode->data == G_END)
         {
-            GAMEEDED = true;
+           //
+            GAMEENDED = 1;
+            lastnode = true;
+            GAMESTATUS = "[END] GOOD JOB! GAME HAS ENDED PRESS ANY KEY TO CONTINUE";
+           
+
 
         }
 
@@ -1333,7 +1367,7 @@ public:
     }
    
    ~Graph() {
-       cout << "NOTHING DELETED FUCK U" << endl;
+      
       
     }
 };
@@ -1347,9 +1381,28 @@ int main() {
 
     int total = number * number;*/
 
-    cout << "Enter grid size:" << endl;
-    int number;
-    cin >> number;
+    
+
+
+
+
+    //======================= SELECT DIFFICULTY====================//
+
+    cout << "||==================================================================||" << endl;
+    cout << "||==================================================================||" << endl;
+    
+    cout << "||                     ENTER THE DIFFICULTY YOU WANT                ||" << endl;
+    cout << "||==================================================================||" << endl;
+    cout << "||==================================================================||" << endl;
+
+    cout << endl;
+    cout << endl;
+
+    int dif;
+    cin >> dif;
+
+   int number;
+    number = dif * 10;
     Graph graph;
     int total = number * number;
     graph.setup(total + 1);
@@ -1456,6 +1509,9 @@ int main() {
 
 
     //=========================================GAMEPLAY===================================================//
+   
+    //TAMIM MAKE THIS MENU MORE AESTHETIC ALSO TRY TO ADD SOUNDS AND STUFF
+    
     cout << "GAME GENERATED." << endl;
 
     cout << "||---------------------------------------||" << endl;
@@ -1463,13 +1519,20 @@ int main() {
     cout << "               2. EXIT" << endl;
     cout << "||---------------------------------------||" << endl;
 
+    gamestarted = true;
+
     int choice;
     cin >> choice;
     int exit = 0;
     if (choice == 1)
     {
-        while( exit == 0)
+        while( lastnode == false)
         {
+            if (GAMEENDED == 1) 
+            {
+                system("cls");
+                break;
+            }
             //cout << "\n\n\n\n\n\n\n";
             system("cls");
             graph.updategraphstatus();
@@ -1488,7 +1551,9 @@ int main() {
             cout << "MOVE DOWN: D" << endl;
             cout << "Show shortest path: P" << endl;
             cout << endl << GAMESTATUS << endl;
+           
             cout << "\n\n\n";
+            
             cout << "SCORE: " << SCORE << endl;
             
             char movement_option;
@@ -1514,9 +1579,28 @@ int main() {
             {
                 displayshortestpath = !displayshortestpath;
             }
-
-
         }
+
+
+
+        //==============================================WHEN GAME ENDS============================================================//
+
+        system("cls");
+        cout << "||======================================================||" << endl;
+        cout << "||=====================GAME HAS ENDED===================||" << endl;
+        cout << "||======================================================||" << endl;
+
+        cout << endl;
+        cout << "Your score: " << SCORE << endl;
+
+        cout << endl << "LEADERBOARD:" << endl;
+
+
+        ///TAMIM DISPLAY LEADERBOARD HERE
+
+
+        //========================================================================================================================/
+
 
     }
     //====================================================================================================//
